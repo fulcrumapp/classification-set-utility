@@ -1,0 +1,67 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+body {
+  padding-top: 50px;
+  background-color: #ededed;
+}
+.right-text, .left-text {
+  width: 100%;
+  height: 100%;
+}
+.login-header {
+  background: #428bca;
+  color: #fff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.fa-white {
+  color: white;
+}
+.navbardropdown {
+  padding-right: 10px;
+}
+.navbarlabel {
+  color: white;
+  padding-right: 5px;
+}
+.navbarselect {
+  max-width: 200px;
+}
+.navbar .navbar-brand {
+  /*font-weight: bold;*/
+  font-size: 24px;
+  color: white;
+}
+.navbar-brand img {
+  height: 40px;
+  margin-top: -10px;
+  margin-bottom: -5px;
+  margin-right: 15px;
+  display: inline;
+}
+.progress-bar-full {
+  width: 100%;
+}
+#loading {
+  display: none;
+  position: absolute;
+  width: 220px;
+  height: 19px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -110px;
+  z-index: 20001;
+}
+@media (max-width: 992px) {
+  .navbar .navbar-brand {
+    font-size: 18px;
+  }
+}
+@media print {
+  .navbar {
+    display: none !important;
+  }
+}
