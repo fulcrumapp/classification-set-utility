@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="A lightweight web application, which utilizes the Fulcrum API for viewing, creating, modifying and downloading Fulcrum Classification Sets.">
+    <meta name="author" content="Bryan McBride">
+    <title>Classification Set Utility</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="http://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="http://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="navbar-brand"><a href="http://fulcrumapp.com" target="_blank"><img src="assets/img/logo_white.png"></a>Classification Set Utility</div>
+        </div>
+        <div class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right">
+            <div class="form-group navbardropdown">
+              <label for="context-select" class="control-label navbarlabel">Account:</label>
+              <select class="form-control navbarselect" id="context-select"></select>
+            </div>
+            <div class="form-group navbardropdown">
+              <label for="context-select" class="control-label navbarlabel">Classification Set:</label>
+              <select class="form-control navbarselect" id="classification-set-select"></select>
+            </div>
+            <button type="button" class="btn btn-primary" id="login-btn"><i class="fa fa-sign-in"></i>&nbsp;Sign In</button>
+          </form>
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-question-circle fa-white"></i>&nbsp;&nbsp;Help <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle"></i>&nbsp;&nbsp;About</a></li>
+                <li><a href="https://github.com/spatialnetworks/fulcrum-api-stats" target="_blank"><i class="fa fa-github-alt"></i>&nbsp;Fork Me</a></li>
+                <li><a href="https://web.fulcrumapp.com/classification_sets" target="_blank"><i class="fa fa-share-square-o"></i>&nbsp;&nbsp;Fulcrum</a></li>
+                <li class="divider" id="logout-divider"></li>
+                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="logout-btn"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;Sign Out</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a id="exportDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe fa-white"></i>&nbsp;&nbsp;Tools <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="csv-btn"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Download CSV</a></li>
+                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="json-btn"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Download JSON</a></li>
+                <li class="divider"></li>
+                <li class="hide"><input class="btn btn-default" type="file" id="csv-upload-input" name="files" value="Upload CSV File"></li>
+                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="csv-upload-btn"><i class="fa fa-cloud-upload"></i>&nbsp;&nbsp;Upload CSV File</a></li>
+                <li class="divider" id="save-divider"></li>
+                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="save-btn"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Save Classification Set</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <div id="loading">
+      <div class="loading-indicator">
+        <div class="progress progress-striped active">
+          <div class="progress-bar progress-bar-info progress-bar-full">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="padding: 10px; height: 100%;">
+      <div class="col-md-6 col-sm-6 col-xs-6" style="padding-right: 5px; height: 100%;">
+        <textarea class="left-text" placeholder="Enter choices here in CSV format"></textarea>
+      </div>
+      <div class="col-md-6 col-sm-6 col-xs-6" style="padding-left: 5px; height: 100%;">
+        <textarea class="right-text" placeholder="Enter classification set JSON in Fulcrum format"></textarea>
+      </div>
+    </div>
+
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Fulcrum Classification Set Utility</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-default">
+              <div class="panel-heading">This is a lightweight web application, which utilizes the <a href="http://fulcrumapp.com/developers/api/classification-sets/" target="_blank">Fulcrum API</a> for viewing, creating, modifying and downloading <a href="http://fulcrumapp.com/help/classification-sets/" target="_blank">Fulcrum Classification Sets</a>. <em>Choicemaker.js code originally forked from <a href="https://github.com/zhm/csvtool" target="_blank">https://github.com/zhm/csvtool</a>.</em></div>
+              <div class="panel-body">
+                <ul>
+                  <li>You can paste in or upload (Tools > Upload CSV File) any CSV file, which conforms to the standard <a href="http://fulcrumapp.com/help/import-classification-set/" target="_blank">Fulcrum Classification Set CSV format</a> and it will return the standard <a href="https://gist.github.com/bmcbride/a07753366bfd322f0909" target="_blank">Fulcrum Classification Set JSON format</a>. Edits can be made to either the JSON or the CSV text, and will be reflected accordingly on either side.</a></li>
+                  <li>Sign in to your Fulcrum account to access and modify existing Classification Sets or create and upload new ones (Tools > Save Classification Set).</li>
+                </ul>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">The standard workflow for bulk updating an existing classification set:</div>
+              <div class="panel-body">
+                <ol>
+                  <li>Log in and select your classification set from the dropdown.</li>
+                  <li>Download as CSV (Tools > Download as CSV).</li>
+                  <li>Open the CSV file in a spreadsheet editor such as Excel or LibreOffice, edit and save.</li>
+                  <li>Upload the CSV file back into the utility and save (Tools > Save Classification Set).</li>
+                </ol>
+              </div>
+            </div>
+            <p class="text-muted"><em>This application saves your Fulcrum API token in your browser sessionStorage. Switch to localStorage if security is less of a concern and you want your login to persist beyond browser sessions.</em></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="loginModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header login-header">
+            <h4 class="modal-title">Sign in
+              <span class="pull-right"><i class="fa fa-sign-in"></i></span></h4>
+          </div>
+          <div class="modal-body">
+            <form role="form">
+              <fieldset>
+                <div class="form-group">
+                  <label for="name">Username</label>
+                  <input type="text" class="form-control" id="email">
+                </div>
+                <div class="form-group">
+                  <label for="email">Password</label>
+                  <input type="password" class="form-control" id="password">
+                </div>
+              </fieldset>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary pull-right" onclick="login();">&nbsp;Sign in</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.0/papaparse.min.js"></script>
+    <script src="assets/js/choicemaker.js"></script>
+    <script src="assets/js/app.js"></script>
+
+  </body>
+</html>
