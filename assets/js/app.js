@@ -117,12 +117,13 @@ $("#csv-upload-input").change(function(evt) {
   var file = evt.target.files[0];
   Papa.parse(file, {
     header: false,
-    dynamicTyping: true,
+    dynamicTyping: false,
     complete: function(results) {
       $(".left-text").val(Papa.unparse(results));
       ClassMaker.convert();
     }
   });
+  $(this).val("");
 });
 
 /* Select an account */
